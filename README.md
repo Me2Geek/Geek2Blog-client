@@ -5,4 +5,4 @@
 
 ---
 
-![Demo](demo.gif)
+[![Demo Video](https://img.shields.io/badge/Play-Demo%20Video-blue?logo=play)](https://blog.me2geek.top/demo.mp4)

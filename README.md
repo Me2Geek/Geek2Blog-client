@@ -5,4 +5,4 @@
 
 ---
 
-[![Demo Video](https://img.shields.io/badge/Play-Demo%20Video-blue?logo=play)](./demo.mp4)
+![Demo](demo.gif)

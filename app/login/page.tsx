@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React, {useEffect} from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -9,13 +9,35 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
+import { Moon, Sun, Home } from "lucide-react"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [isDark, setIsDark] = useState(true)
   const router = useRouter()
   const { toast } = useToast()
+
+    useEffect(() => {
+        if (typeof window === "undefined") return; // 确保在客户端
+        try {
+            const storedToken = localStorage.getItem("token");
+            if (storedToken) {
+                router.push("/admin");
+            }
+        } catch (error) {
+            console.error("Failed to read token from localStorage:", error);
+        }
+    }, [router]);
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark")
+    } else {
+      document.documentElement.classList.remove("dark")
+    }
+  }, [isDark])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,6 +79,14 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <Button variant="ghost" size="icon" onClick={() => router.push("/")}> 
+          <Home className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="icon" onClick={() => setIsDark(!isDark)}>
+          {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </Button>
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>管理员登录</CardTitle>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ArrowLeft, Moon, Sun } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import remarkGfm from "remark-gfm";
@@ -23,6 +22,7 @@ export default function PostDetailPage() {
   const router = useRouter()
   const [post, setPost] = useState<Post | null>(null)
   const [isDark, setIsDark] = useState(true)
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "我的博客"
 
   useEffect(() => {
     if (isDark) {
@@ -31,6 +31,14 @@ export default function PostDetailPage() {
       document.documentElement.classList.remove("dark")
     }
   }, [isDark])
+
+  useEffect(() => {
+    if (post?.title) {
+      document.title = `${siteName} - ${post.title}`
+    } else {
+      document.title = siteName
+    }
+  }, [post?.title, siteName])
 
   useEffect(() => {
     fetchPost()
@@ -69,18 +77,17 @@ export default function PostDetailPage() {
             <ArrowLeft className="h-4 w-4" />
             返回
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => setIsDark(!isDark)}>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground hidden md:inline">{siteName}</span>
+            <Button variant="ghost" size="icon" onClick={() => setIsDark(!isDark)}>
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </Button>
+            </Button>
+          </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="flex items-center gap-4 mb-6">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={post.avatar || "/placeholder.svg?height=64&width=64"} />
-            <AvatarFallback>{post.title[0]}</AvatarFallback>
-          </Avatar>
           <div>
             <h1 className="text-3xl font-bold text-foreground">{post.title}</h1>
             <time className="text-sm text-muted-foreground">{post.date}</time>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import { Pencil, Trash2, Plus, LogOut } from "lucide-react"
+import { Pencil, Trash2, Plus, LogOut, Moon, Sun, Home } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -32,6 +32,8 @@ export default function AdminPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingPost, setEditingPost] = useState<Post | null>(null)
   const [formData, setFormData] = useState({ title: "", content: "", date: "" })
+  const [isDark, setIsDark] = useState(true)
+  const contentRef = useRef<HTMLTextAreaElement | null>(null)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -68,6 +70,14 @@ export default function AdminPage() {
 
     initAdmin()
   }, [router, toast])
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark")
+    } else {
+      document.documentElement.classList.remove("dark")
+    }
+  }, [isDark])
 
   const fetchPosts = async (apiUrl?: string) => {
     const baseUrl = apiUrl || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
@@ -214,6 +224,79 @@ export default function AdminPage() {
     router.push("/")
   }
 
+  const insertAtCursor = (text: string) => {
+    const el = contentRef.current
+    if (!el) return
+    const start = el.selectionStart ?? el.value.length
+    const end = el.selectionEnd ?? el.value.length
+    const before = formData.content.slice(0, start)
+    const after = formData.content.slice(end)
+    const next = `${before}${text}${after}`
+    setFormData((prev) => ({ ...prev, content: next }))
+    requestAnimationFrame(() => {
+      if (!el) return
+      const caret = start + text.length
+      el.selectionStart = el.selectionEnd = caret
+      el.focus()
+    })
+  }
+
+  const uploadImage = async (file: File) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
+    const form = new FormData()
+    form.append("token", token)
+    form.append("file", file)
+    const res = await fetch(`${apiUrl}/post/uploadImage`, {
+      method: "POST",
+      body: form,
+    })
+    const data = await res.json()
+    if (!data.status) throw new Error(data.message || "上传失败")
+    const path: string = data.data
+    const full = path.startsWith("http") ? path : `${apiUrl}${path}`
+    return full
+  }
+
+  const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items
+    if (!items) return
+    const files: File[] = []
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      if (item.kind === "file") {
+        const f = item.getAsFile()
+        if (f) files.push(f)
+      }
+    }
+    if (files.length === 0) return
+    e.preventDefault()
+    try {
+      for (const f of files) {
+        const url = await uploadImage(f)
+        insertAtCursor(`\n![image](${url})\n`)
+      }
+      toast({ title: "上传成功", description: `已插入 ${files.length} 张图片` })
+    } catch (err) {
+      toast({ title: "上传失败", description: err instanceof Error ? err.message : "出错了", variant: "destructive" })
+    }
+  }
+
+  const handleDrop = async (e: React.DragEvent<HTMLTextAreaElement>) => {
+    const fileList = e.dataTransfer?.files
+    if (!fileList || fileList.length === 0) return
+    e.preventDefault()
+    try {
+      for (let i = 0; i < fileList.length; i++) {
+        const f = fileList[i]
+        const url = await uploadImage(f)
+        insertAtCursor(`\n![image](${url})\n`)
+      }
+      toast({ title: "上传成功", description: `已插入 ${fileList.length} 张图片` })
+    } catch (err) {
+      toast({ title: "上传失败", description: err instanceof Error ? err.message : "出错了", variant: "destructive" })
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -231,6 +314,12 @@ export default function AdminPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">管理后台</h1>
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={() => router.push("/")}> 
+              <Home className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => setIsDark(!isDark)}>
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={openAddDialog}>
@@ -257,10 +346,14 @@ export default function AdminPage() {
                     <Label htmlFor="content">内容</Label>
                     <Textarea
                       id="content"
+                      ref={contentRef}
                       value={formData.content}
                       onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                      placeholder="请输入内容"
-                      rows={10}
+                      onPaste={handlePaste}
+                      onDrop={handleDrop}
+                      onDragOver={(e) => e.preventDefault()}
+                      placeholder="支持 Markdown。可粘贴或拖拽图片自动上传"
+                      rows={14}
                     />
                   </div>
                   <div className="space-y-2">

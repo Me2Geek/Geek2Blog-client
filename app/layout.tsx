@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import PageTransition from '@/components/page-transition'
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_SITE_NAME || '我的博客',
@@ -16,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans`}>
-        {children}
+          {children}
         {/* 全局悬浮搜索 */}
         <div suppressHydrationWarning>
           {/* 仅在客户端渲染浮层 */}

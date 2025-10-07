@@ -135,12 +135,12 @@ export default function PostDetailPage() {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="flex items-center gap-4 mb-6 animate-in duration-500">
           <div>
-            <h1 className="text-3xl font-bold text-foregroundduration-700 delay-200">{post.title}</h1>
-            <time className="text-sm text-muted-foreground duration-700 delay-300">{post.date}</time>
+            <h1 className="text-3xl font-bold text-foregroundduration-700">{post.title}</h1>
+            <time className="text-sm text-muted-foreground duration-700">{post.date}</time>
           </div>
         </div>
 
-          <Card className="p-8 duration-700 delay-400 hover:shadow-lg transition-shadow">
+          <Card className="p-8 duration-700 hover:shadow-lg transition-shadow">
               <div className="prose prose-invert max-w-none">
                   <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
                       {post.content}

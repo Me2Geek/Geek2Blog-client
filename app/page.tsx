@@ -96,7 +96,7 @@ export default function HomePage() {
       <main className="container mx-auto px-4 py-14 max-w-4xl">
         {isLoading ? (
           <div className="space-y-12">
-            {Array.from({ length: 3 }).map((_, index) => (
+            {Array.from({ length: 2 }).map((_, index) => (
               <SkeletonCard key={index} />
             ))}
           </div>

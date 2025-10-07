@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ArrowLeft, Moon, Sun } from "lucide-react"
 import { Card } from "@/components/ui/card"
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
+import ReactMarkdown from "react-markdown";
 
 interface Post {
   id: number
@@ -84,11 +87,14 @@ export default function PostDetailPage() {
           </div>
         </div>
 
-        <Card className="p-8">
-          <div className="prose prose-invert max-w-none">
-            <div className="whitespace-pre-wrap text-foreground leading-relaxed">{post.content}</div>
-          </div>
-        </Card>
+          <Card className="p-8">
+              <div className="prose prose-invert max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                      {post.content}
+                  </ReactMarkdown>
+              </div>
+          </Card>
+
       </main>
     </div>
   )

@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Moon, Sun, Loader2 } from "lucide-react"
 import Link from "next/link"
+import Footer from "@/components/Footer";
 
 interface Post {
   id: number
@@ -86,9 +87,12 @@ export default function HomePage() {
             <Button variant="ghost" size="icon" onClick={() => setIsDark(!isDark)} className="hover:scale-110 transition-transform duration-200">
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Link href="/login">
-              <Button variant="ghost" className="hover:scale-105 transition-transform duration-200">登录</Button>
-            </Link>
+              <Link href="/search">
+                  <Button variant="ghost" className="hover:scale-105 transition-transform duration-200">搜索</Button>
+              </Link>
+              <Link href="/login">
+                  <Button variant="ghost" className="hover:scale-105 transition-transform duration-200">登录</Button>
+              </Link>
           </div>
         </div>
       </header>
@@ -117,6 +121,7 @@ export default function HomePage() {
           </div>
         )}
       </main>
+        <Footer />
     </div>
   )
 }

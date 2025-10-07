@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import Footer from "@/components/Footer";
 
 interface Post {
   id: number
@@ -404,6 +405,7 @@ export default function AdminPage() {
           ))}
         </div>
       </main>
+        <Footer />
     </div>
   )
 }

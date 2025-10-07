@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
+import Footer from "@/components/Footer";
 
 interface Post {
   id: number
@@ -85,22 +86,28 @@ export default function SearchPage() {
         {error && (
           <p className="text-sm text-destructive mt-3">{error}</p>
         )}
-
-        <div className="mt-6 space-y-4">
-          {results.map((post) => (
-            <Link key={post.id} href={`/post/${post.id}`}>
-              <Card className="p-4 hover:bg-accent/50 transition-colors cursor-pointer">
-                <h2 className="text-lg font-semibold text-foreground mb-1">{post.title}</h2>
-                <p className="text-muted-foreground line-clamp-2">{post.content}</p>
-                <time className="text-xs text-muted-foreground">{post.date}</time>
-              </Card>
-            </Link>
-          ))}
-          {!loading && !error && results.length === 0 && (
-            <p className="text-muted-foreground">请输入关键词进行搜索</p>
-          )}
-        </div>
+          <div className="py-7 space-y-7">
+              {results.map((post) => (
+                  <Link key={post.id} href={`/post/${post.id}`} className="block">
+                      <Card className="p-7 md:p-9 hover:bg-accent/50 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:shadow-lg">
+                          <div className="flex items-start gap-5 md:gap-6">
+                              <div className="flex-1">
+                                  <h2 className="text-xl md:text-[22px] font-semibold text-foreground mb-3 transition-colors group-hover:text-primary">
+                                      {post.title}
+                                  </h2>
+                                  <p className="text-muted-foreground line-clamp-2">{post.content}</p>
+                                  <time className="text-sm text-muted-foreground">{post.date}</time>
+                              </div>
+                          </div>
+                      </Card>
+                  </Link>
+              ))}
+              {!loading && !error && results.length === 0 && (
+                  <p className="text-muted-foreground">请输入关键词进行搜索</p>
+              )}
+          </div>
       </main>
+        <Footer />
     </div>
   )
 }

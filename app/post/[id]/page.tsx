@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card"
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import ReactMarkdown from "react-markdown";
+import Footer from "@/components/Footer";
 
 interface Post {
   id: number
@@ -147,8 +148,8 @@ export default function PostDetailPage() {
                   </ReactMarkdown>
               </div>
           </Card>
-
       </main>
+        <Footer />
     </div>
   )
 }

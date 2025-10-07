@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { Moon, Sun, Home } from "lucide-react"
+import Footer from "@/components/Footer";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -121,6 +122,8 @@ export default function LoginPage() {
             </Button>
           </form>
         </CardContent>
+          <Footer />
+
       </Card>
     </div>
   )

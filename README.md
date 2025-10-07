@@ -5,4 +5,4 @@
 
 ---
 
-[![Demo Blog]](https://demo.blog.me2geek.top/)
+[[Demo Blog]](https://demo.blog.me2geek.top/)

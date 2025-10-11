@@ -56,8 +56,7 @@ export default function PostDetailPage() {
       })
       const data = await response.json()
       if (data.status) {
-        // 添加延迟以展示加载动画
-        await new Promise(resolve => setTimeout(resolve, 600))
+        await new Promise(resolve => setTimeout(resolve, 200))
         const foundPost = data.data.find((p: Post) => p.id === Number(params.id))
         setPost(foundPost || null)
       }

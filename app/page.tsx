@@ -44,7 +44,7 @@ export default function HomePage() {
       const data = await response.json()
       if (data.status) {
         // 添加延迟以展示加载动画
-        await new Promise(resolve => setTimeout(resolve, 800))
+        await new Promise(resolve => setTimeout(resolve, 200))
         setPosts(data.data)
       }
     } catch (error) {
